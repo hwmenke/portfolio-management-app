@@ -1,6 +1,6 @@
 from fastapi import FastAPI, UploadFile, File, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse
+from fastapi.responses import JSONResponse
 from typing import List, Dict, Optional
 import pandas as pd
 import json
@@ -100,8 +100,8 @@ async def generate_report(user_id: str):
     try:
         portfolio = portfolios[user_id]
         metrics = analyzer.calculate_metrics(portfolio)
-        report_path = analyzer.generate_pdf_report(portfolio, metrics)
-        return FileResponse(report_path, filename="portfolio_report.pdf")
+        report = analyzer.generate_json_report(portfolio, metrics)
+        return JSONResponse(content=report)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
